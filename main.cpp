@@ -5,7 +5,7 @@
     Author's Role: Member 1: Road networking 
                    Member 2:
                    Member 3: 
-                   Member 4: 
+                   Member 4: Charging station
     Charging stations are represented only as SPECIAL NODES.
     Other charging-related functions will be integrated later
     by the respective team members.
@@ -206,6 +206,53 @@ void displayAdjacencyList()
     cout << "\n============================================================\n";
 }
 
+
+
+
+
+//=================================================================
+//=================================================================
+//               CHARGING STATION : MEMBER 4
+// ================================================================
+//=================================================================
+
+
+
+
+
+// 8. SEARCH CHARGING STATION
+
+void searchChargingStation()
+{
+    string id;
+    bool found = false;
+
+    cout << "\nEnter Charging Station ID: ";
+    cin >> id;
+
+    for (const auto &location : locations)
+    {
+        if (location.isChargingStation &&
+            location.stationId == id)
+        {
+            cout << "\nCharging Station Found!\n";
+            cout << "Station ID : " << location.stationId << endl;
+            cout << "Location   : " << location.name << endl;
+
+            found = true;
+            break;
+        }
+    }
+
+    if (!found)
+    {
+        cout << "\nCharging Station not found.\n";
+    }
+}
+
+
+
+
 // MENU
 
 
@@ -220,7 +267,8 @@ void showMenu()
     cout << "1. Display City Locations\n";
     cout << "2. Display Road Network\n";
     cout << "3. Display Adjacency List\n";
-    cout << "4. Exit\n";
+    cout << "4. Search Charging Station\n";    // MEMBER 4
+    cout << "5. Exit\n";
 }
 //==============================================================================
 //=============================================================================
