@@ -2,14 +2,10 @@
     ============================================================
         EV CHARGING SPOT LOCATOR ROAD NETWORKING MODULE
     ============================================================
-    Author's Role:
-    Road Network (Member 2)
-    CURRENT CHECKPOINT:
-    1. Create city locations
-    2. Represent charging stations as special nodes
-    3. Create weighted roads between locations
-    4. Store the road network using an adjacency list
-
+    Author's Role: Member 1: Road networking 
+                   Member 2:
+                   Member 3: 
+                   Member 4: 
     Charging stations are represented only as SPECIAL NODES.
     Other charging-related functions will be integrated later
     by the respective team members.
@@ -23,10 +19,13 @@
 
 using namespace std;
 
-// ============================================================
-// 1. LOCATION (VERTEX)
-// ============================================================
 
+// ================================================================
+//=================================================================
+//               ROAD NETWORK AND ROUTTING : MEMBER 1
+// ================================================================
+//=================================================================
+//  LOCATION (VERTEX)
 struct Location
 {
     string name;
@@ -34,14 +33,10 @@ struct Location
     string stationId;
 };
 
-
 // Number of locations in the city
 const int V = 15;
 
-
-// ============================================================
-// 2. CITY LOCATIONS
-// ============================================================
+//  CITY LOCATIONS
 
 vector<Location> locations =
 {
@@ -63,7 +58,7 @@ vector<Location> locations =
 };
 
 
-// 3. EDGE (ROAD)
+//  EDGE (ROAD)
 
 struct Edge
 {
@@ -72,7 +67,7 @@ struct Edge
     double distance;    // Road distance in kilometres
 };
 
-// 4. CITY ROAD NETWORK
+//  CITY ROAD NETWORK
 
 vector<Edge> edgeList =
 {
@@ -90,7 +85,7 @@ vector<Edge> edgeList =
 
 vector<vector<pair<int, double>>> adj;
 
-// 6. CREATE GRAPH
+//  CREATE GRAPH
 
 void createGraph()
 {
@@ -114,7 +109,7 @@ void createGraph()
     }
 }
 
-// 7. DISPLAY CITY LOCATIONS
+//  DISPLAY CITY LOCATIONS
 
 void displayLocations()
 {
@@ -141,7 +136,7 @@ void displayLocations()
     cout << "============================================================\n";
 }
 
-// 8. DISPLAY ROAD NETWORK
+//  DISPLAY ROAD NETWORK
 
 
 void displayRoadNetwork()
@@ -166,7 +161,7 @@ void displayRoadNetwork()
     cout << "============================================================\n";
 }
 
-// 9. DISPLAY ADJACENCY LIST
+//  DISPLAY ADJACENCY LIST
 
 void displayAdjacencyList()
 {
@@ -211,7 +206,7 @@ void displayAdjacencyList()
     cout << "\n============================================================\n";
 }
 
-// 10. MENU
+// MENU
 
 
 void showMenu()
@@ -227,8 +222,10 @@ void showMenu()
     cout << "3. Display Adjacency List\n";
     cout << "4. Exit\n";
 }
+//==============================================================================
+//=============================================================================
 
-// 11. MAIN
+// MAIN
 
 int main()
 {
