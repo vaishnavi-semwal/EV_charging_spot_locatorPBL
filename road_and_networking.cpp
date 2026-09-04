@@ -17,36 +17,23 @@
 */
 
 #include <iostream>
-#include <vector>  //A vector is like an array, but it can change its size while the program is running
-                   //means it is used for dynamic size
+#include <vector>  
 #include <string>
-#include <iomanip>//used to make the console output look properly aligned or formatted,
-// especially for things like tables, distances, battery percentages, costs, etc.
+#include <iomanip>
 
 using namespace std;
 
-// ============================================================
 // 1. LOCATION (VERTEX)
-// ============================================================
-
-struct Location //used to create our own data type
+struct Location 
 {
     string name;
-    bool isChargingStation;  //This stores whether the location is a charging station or not. bool can have only two values: true false
+    bool isChargingStation; 
     string stationId;
 };
-
-
-// Number of locations in the city constant means their value cant be changed
 const int V = 15;
 
-
-// ============================================================
 // 2. CITY LOCATIONS
-// ============================================================
-
-vector<Location> locations = //This creates a vector called locations.<Location> The vector will contain objects of type Location.
-{
+vector<Location> locations = 
     {"Clock Tower",          false, ""},
     {"ISBT",                 true,  "CS2"},
     {"Ballupur Chowk",       false, ""},
@@ -64,9 +51,7 @@ vector<Location> locations = //This creates a vector called locations.<Location>
     {"Forest Research Area", false, ""}
 }; //it has name ischargingstation and station id and now vector is initialized
 
-
 // 3. EDGE (ROAD)
-
 struct Edge
 {
     int u;              // Starting location
@@ -96,20 +81,14 @@ vector<vector<pair<int, double>>> adj;
 
 void createGraph()
 {
-    // Create an empty adjacency list
+
     adj.assign(V, {});
-
-
-    // Add every road to the graph
     for (const auto &e : edgeList)
     {
         // Road from u to v
         adj[e.u].push_back(
             {e.v, e.distance}
         );
-
-        // Road from v to u
-        // because city roads are bidirectional
         adj[e.v].push_back(
             {e.u, e.distance}
         );
