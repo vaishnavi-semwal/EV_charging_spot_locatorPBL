@@ -1,3 +1,15 @@
+/*
+    ============================================================
+        EV CHARGING SPOT LOCATOR ROAD NETWORKING MODULE
+    ============================================================
+    Author's Role:
+    managing EV charging station (Member 4)
+    Member 4 manages EV charging station details such as
+    station ID, name, and location.
+    They also display whether each charging station is 
+    currently available or unavailable.
+    ============================================================
+*/
 #include <iostream>
 #include <vector>
 using namespace std;
