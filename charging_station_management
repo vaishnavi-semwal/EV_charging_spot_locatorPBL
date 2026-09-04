@@ -1,0 +1,57 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <queue>
+using namespace std;
+
+class Charger
+{
+private:
+    int chargerID;
+    string location;
+    int totalSlots;
+    int availableSlots;
+    float powerOutput;
+    vector<int> chargingCars;
+    queue<int> waitingCars;
+
+public:
+Charger(int chargerID, string location, int totalSlots,
+            int availableSlots, float powerOutput)
+    {
+        this->chargerID = chargerID;
+        this->location = location;
+        this->totalSlots = totalSlots;
+        this->availableSlots = availableSlots;
+        this->powerOutput = powerOutput;
+    }
+
+   
+    void display()
+    {
+        cout << "\n----- Charging Station Details -----" << endl;
+        cout << "Charger ID      : " << chargerID << endl;
+        cout << "Location        : " << location << endl;
+        cout << "Total Slots     : " << totalSlots << endl;
+        cout << "Available Slots : " << availableSlots << endl;
+        cout << "Power Output    : " << powerOutput << " kW" << endl;
+
+        cout << "Cars Charging   : ";
+
+        if (chargingCars.empty())
+        {
+            cout << "None";
+        }
+        else
+        {
+            for (int i = 0; i < chargingCars.size(); i++)
+            {
+                cout << chargingCars[i] << " ";
+            }
+        }
+
+        cout << endl;
+        cout << "Cars Waiting    : " << waitingCars.size() << endl;
+    }
+
+    
