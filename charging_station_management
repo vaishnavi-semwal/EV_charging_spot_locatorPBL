@@ -7,7 +7,7 @@ using namespace std;
 class Charger
 {
 private:
-    int chargerID;
+    int chargerID[10];
     string location;
     int totalSlots;
     int availableSlots;
@@ -19,7 +19,7 @@ public:
 Charger(int chargerID, string location, int totalSlots,
             int availableSlots, float powerOutput)
     {
-        this->chargerID = chargerID;
+        this->chargerID = chargerID[10];
         this->location = location;
         this->totalSlots = totalSlots;
         this->availableSlots = availableSlots;
