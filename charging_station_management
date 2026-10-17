@@ -1,8 +1,8 @@
-
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <queue>
+#include <vector>
 using namespace std;
 
 class Charger
@@ -15,11 +15,10 @@ private:
     int carsCurrentlyCharging;
     int availableSlots;
 
+    vector<int> chargingCars;
     queue<int> waitingCars;
-    int chargingCarIDs[20];
 
 public:
-    
     Charger(int chargerID, string location, int totalSlots,
             float chargingPower)
     {
@@ -43,53 +42,52 @@ public:
         this->availableSlots = totalSlots;
     }
 
-    
-    int getChargerID()
+    int getChargerID() 
     {
         return chargerID;
     }
 
-
-    string getLocation()
+    string getLocation() 
     {
         return location;
     }
 
-    int getTotalSlots()
+    int getTotalSlots() 
     {
         return totalSlots;
     }
 
-   
-    float getChargingPower()
+    float getChargingPower() 
     {
         return chargingPower;
     }
 
-    int getCarsCurrentlyCharging()
+    int getCarsCurrentlyCharging() 
     {
         return carsCurrentlyCharging;
     }
 
-   
-    int getAvailableSlots()
+    int getAvailableSlots() 
     {
         return availableSlots;
     }
 
-    
     int getWaitingCount()
     {
         return waitingCars.size();
     }
 
-    
     void addCarToQueue(int carID)
     {
         if (carID <= 0)
             throw invalid_argument("Car ID must be positive.");
 
-       
+        for (int i = 0; i < chargingCars.size(); i++)
+        {
+            if (chargingCars[i] == carID)
+                throw runtime_error("Car is already charging.");
+        }
+
         queue<int> temp = waitingCars;
 
         while (!temp.empty())
@@ -100,19 +98,11 @@ public:
             temp.pop();
         }
 
-        for (int i = 0; i < carsCurrentlyCharging; i++)
-        {
-            if (chargingCarIDs[i] == carID)
-                throw runtime_error("Car is already charging.");
-        }
-
         waitingCars.push(carID);
 
-        cout << "Car " << carID
-             << " added to the waiting queue.\n";
+        cout << "Car " << carID<< " added to the waiting queue.\n";
     }
 
-    
     void removeCarFromQueue(int carID)
     {
         queue<int> temp;
@@ -152,10 +142,8 @@ int main()
         cout << "Charger ID: " << c1.getChargerID() << "\n";
         cout << "Location: " << c1.getLocation() << "\n";
         cout << "Total slots: " << c1.getTotalSlots() << "\n";
-        cout << "Charging power: " << c1.getChargingPower()
-             << " kW\n";
-        cout << "Available slots: " << c1.getAvailableSlots()
-             << "\n";
+        cout << "Charging power: " << c1.getChargingPower() << " kW\n";
+        cout << "Available slots: "<< c1.getAvailableSlots() << "\n";
 
         c1.addCarToQueue(201);
         c1.addCarToQueue(202);
@@ -164,8 +152,7 @@ int main()
 
         c1.removeCarFromQueue(201);
 
-        cout << "Waiting cars after removal: "
-             << c1.getWaitingCount() << "\n";
+        cout << "Waiting cars after removal: "<< c1.getWaitingCount() << "\n";
     }
     catch (const exception& e)
     {
