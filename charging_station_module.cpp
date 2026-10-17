@@ -25,11 +25,14 @@ struct ChargingStation
 int main()
 {
     vector<ChargingStation> stations;
-
-    stations.push_back({1, "Station A", "GEHU", true});
-    stations.push_back({2, "Station B", "ISBT", true});
-    stations.push_back({3, "Station C", "Rajpur Road", false});
-
+stations.push_back({1, "CS1", "Pacific Mall", true});
+stations.push_back({2, "CS2", "ISBT", true});
+stations.push_back({3, "CS3", "Rajpur Road", true});
+stations.push_back({4, "CS4", "Sahastradhara Road", true});
+stations.push_back({5, "CS5", "Prem Nagar", true});
+stations.push_back({6, "CS6", "Clement Town", true});
+stations.push_back({7, "CS7", "FRI", true});
+   
     cout << "EV Charging Stations\n\n";
 
     for (auto station : stations)
