@@ -1,57 +1,179 @@
+
 #include <iostream>
 #include <string>
-#include <vector>
+#include <stdexcept>
 #include <queue>
 using namespace std;
 
 class Charger
 {
 private:
-    int chargerID[10];
+    int chargerID;
     string location;
     int totalSlots;
+    float chargingPower;
+    int carsCurrentlyCharging;
     int availableSlots;
-    float powerOutput;
-    vector<int> chargingCars;
+
     queue<int> waitingCars;
+    int chargingCarIDs[20];
 
 public:
-Charger(int chargerID, string location, int totalSlots,
-            int availableSlots, float powerOutput)
+    
+    Charger(int chargerID, string location, int totalSlots,
+            float chargingPower)
     {
-        this->chargerID = chargerID[10];
+        if (chargerID <= 0)
+            throw invalid_argument("Charger ID must be positive.");
+
+        if (location.empty())
+            throw invalid_argument("Location cannot be empty.");
+
+        if (totalSlots <= 0 || totalSlots > 20)
+            throw invalid_argument("Slots must be between 1 and 20.");
+
+        if (chargingPower <= 0)
+            throw invalid_argument("Charging power must be positive.");
+
+        this->chargerID = chargerID;
         this->location = location;
         this->totalSlots = totalSlots;
-        this->availableSlots = availableSlots;
-        this->powerOutput = powerOutput;
+        this->chargingPower = chargingPower;
+        this->carsCurrentlyCharging = 0;
+        this->availableSlots = totalSlots;
+    }
+
+    
+    int getChargerID()
+    {
+        return chargerID;
+    }
+
+
+    string getLocation()
+    {
+        return location;
+    }
+
+    int getTotalSlots()
+    {
+        return totalSlots;
     }
 
    
-    void display()
+    float getChargingPower()
     {
-        cout << "\n----- Charging Station Details -----" << endl;
-        cout << "Charger ID      : " << chargerID << endl;
-        cout << "Location        : " << location << endl;
-        cout << "Total Slots     : " << totalSlots << endl;
-        cout << "Available Slots : " << availableSlots << endl;
-        cout << "Power Output    : " << powerOutput << " kW" << endl;
+        return chargingPower;
+    }
 
-        cout << "Cars Charging   : ";
+    int getCarsCurrentlyCharging()
+    {
+        return carsCurrentlyCharging;
+    }
 
-        if (chargingCars.empty())
+   
+    int getAvailableSlots()
+    {
+        return availableSlots;
+    }
+
+    
+    int getWaitingCount()
+    {
+        return waitingCars.size();
+    }
+
+    
+    void addCarToQueue(int carID)
+    {
+        if (carID <= 0)
+            throw invalid_argument("Car ID must be positive.");
+
+       
+        queue<int> temp = waitingCars;
+
+        while (!temp.empty())
         {
-            cout << "None";
+            if (temp.front() == carID)
+                throw runtime_error("Car is already waiting.");
+
+            temp.pop();
         }
-        else
+
+        for (int i = 0; i < carsCurrentlyCharging; i++)
         {
-            for (int i = 0; i < chargingCars.size(); i++)
+            if (chargingCarIDs[i] == carID)
+                throw runtime_error("Car is already charging.");
+        }
+
+        waitingCars.push(carID);
+
+        cout << "Car " << carID
+             << " added to the waiting queue.\n";
+    }
+
+    
+    void removeCarFromQueue(int carID)
+    {
+        queue<int> temp;
+        bool found = false;
+
+        while (!waitingCars.empty())
+        {
+            int currentCar = waitingCars.front();
+            waitingCars.pop();
+
+            if (currentCar == carID && !found)
             {
-                cout << chargingCars[i] << " ";
+                found = true;
+            }
+            else
+            {
+                temp.push(currentCar);
             }
         }
 
-        cout << endl;
-        cout << "Cars Waiting    : " << waitingCars.size() << endl;
+        waitingCars = temp;
+
+        if (!found)
+            throw runtime_error("Car not found in waiting queue.");
+
+        cout << "Car " << carID
+             << " removed from the waiting queue.\n";
     }
+};
+
+int main()
+{
+    try
+    {
+        Charger c1(101, "Dehradun", 4, 50.0f);
+
+        cout << "Charger ID: " << c1.getChargerID() << "\n";
+        cout << "Location: " << c1.getLocation() << "\n";
+        cout << "Total slots: " << c1.getTotalSlots() << "\n";
+        cout << "Charging power: " << c1.getChargingPower()
+             << " kW\n";
+        cout << "Available slots: " << c1.getAvailableSlots()
+             << "\n";
+
+        c1.addCarToQueue(201);
+        c1.addCarToQueue(202);
+
+        cout << "Waiting cars: " << c1.getWaitingCount() << "\n";
+
+        c1.removeCarFromQueue(201);
+
+        cout << "Waiting cars after removal: "
+             << c1.getWaitingCount() << "\n";
+    }
+    catch (const exception& e)
+    {
+        cout << "Error: " << e.what() << "\n";
+    }
+
+    return 0;
+}
+
 
     
