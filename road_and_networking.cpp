@@ -1,39 +1,24 @@
-/*
-    ============================================================
-        EV CHARGING SPOT LOCATOR ROAD NETWORKING MODULE
-    ============================================================
-    Author's Role:
-    Road Network (Member 2)
-    CURRENT CHECKPOINT:
-    1. Create city locations
-    2. Represent charging stations as special nodes
-    3. Create weighted roads between locations
-    4. Store the road network using an adjacency list
-
-    Charging stations are represented only as SPECIAL NODES.
-    Other charging-related functions will be integrated later
-    by the respective team members.
-    ============================================================
-*/
 
 #include <iostream>
-#include <vector>  
+#include <vector>
 #include <string>
 #include <iomanip>
 
 using namespace std;
 
 // 1. LOCATION (VERTEX)
-struct Location 
+struct Location
 {
     string name;
-    bool isChargingStation; 
+    bool isChargingStation;
     string stationId;
 };
+
 const int V = 15;
 
 // 2. CITY LOCATIONS
-vector<Location> locations = 
+vector<Location> locations =
+{
     {"Clock Tower",          false, ""},
     {"ISBT",                 true,  "CS2"},
     {"Ballupur Chowk",       false, ""},
@@ -49,54 +34,59 @@ vector<Location> locations =
     {"Sahastradhara",        false, ""},
     {"FRI",                  true,  "CS7"},
     {"Forest Research Area", false, ""}
-}; //it has name ischargingstation and station id and now vector is initialized
+};
 
 // 3. EDGE (ROAD)
 struct Edge
 {
-    int u;              // Starting location
-    int v;              // Ending location
-    double distance;    // Road distance in kilometres
+    int u;
+    int v;
+    double distance;
 };
 
-// 4. CITY ROAD NETWORK
-
+// 4. CITY ROAD NETWORK (EDGE LIST)
 vector<Edge> edgeList =
 {
-    {0, 1, 2.6},{0, 2, 2.4}, {0, 4, 2.1},
-    {0, 5, 3.0}, {0, 9, 4.8}, {0, 11, 3.4},
-    {1, 8, 5.2}, {2, 3, 2.8}, {2, 10, 3.1},
-    {3, 8, 4.5}, {4, 6, 3.2}, {4, 7, 2.3},
-    {5, 7, 4.2}, {5, 13, 2.7}, {5, 14, 3.5},
-    {9, 12, 1.5}, {11, 9, 4.0}, {11, 12, 3.0},{13, 14, 1.2}
+    {0, 1, 2.6},
+    {0, 2, 2.4},
+    {0, 4, 2.1},
+    {0, 5, 3.0},
+    {0, 9, 4.8},
+    {0, 11, 3.4},
+    {1, 8, 5.2},
+    {2, 3, 2.8},
+    {2, 10, 3.1},
+    {3, 8, 4.5},
+    {4, 6, 3.2},
+    {4, 7, 2.3},
+    {5, 7, 4.2},
+    {5, 13, 2.7},
+    {5, 14, 3.5},
+    {9, 12, 1.5},
+    {11, 9, 4.0},
+    {11, 12, 3.0},
+    {13, 14, 1.2}
 };
 
 // 5. ADJACENCY LIST
-// adj[node] contains:
-// {connected node, road distance}
-
 vector<vector<pair<int, double>>> adj;
 
-// 6. CREATE GRAPH
-
+// 6. CREATE GRAPH: EDGE LIST TO ADJACENCY LIST
 void createGraph()
 {
-
     adj.assign(V, {});
+
     for (const auto &e : edgeList)
     {
         // Road from u to v
-        adj[e.u].push_back(
-            {e.v, e.distance}
-        );
-        adj[e.v].push_back(
-            {e.u, e.distance}
-        );
+        adj[e.u].push_back({e.v, e.distance});
+
+        // Road from v to u (undirected graph)
+        adj[e.v].push_back({e.u, e.distance});
     }
 }
 
 // 7. DISPLAY CITY LOCATIONS
-
 void displayLocations()
 {
     cout << "\n";
@@ -106,13 +96,11 @@ void displayLocations()
 
     for (int i = 0; i < V; i++)
     {
-        cout << i << ". "
-             << locations[i].name;
+        cout << i << ". " << locations[i].name;
 
         if (locations[i].isChargingStation)
         {
-            cout << " ["
-                 << locations[i].stationId
+            cout << " [" << locations[i].stationId
                  << " - Charging Station]";
         }
 
@@ -123,8 +111,6 @@ void displayLocations()
 }
 
 // 8. DISPLAY ROAD NETWORK
-
-
 void displayRoadNetwork()
 {
     cout << "\n";
@@ -136,8 +122,7 @@ void displayRoadNetwork()
     {
         cout << locations[e.u].name
              << "  <---- "
-             << fixed
-             << setprecision(1)
+             << fixed << setprecision(1)
              << e.distance
              << " km ---->  "
              << locations[e.v].name
@@ -148,7 +133,6 @@ void displayRoadNetwork()
 }
 
 // 9. DISPLAY ADJACENCY LIST
-
 void displayAdjacencyList()
 {
     cout << "\n";
@@ -158,14 +142,11 @@ void displayAdjacencyList()
 
     for (int i = 0; i < V; i++)
     {
-        cout << "\n[" << i << "] "
-             << locations[i].name;
+        cout << "\n[" << i << "] " << locations[i].name;
 
         if (locations[i].isChargingStation)
         {
-            cout << " ("
-                 << locations[i].stationId
-                 << ")";
+            cout << " (" << locations[i].stationId << ")";
         }
 
         cout << "\n";
@@ -175,15 +156,10 @@ void displayAdjacencyList()
             int neighbour = connection.first;
             double distance = connection.second;
 
-            cout << "    -> "
-                 << neighbour
-                 << " ("
-                 << locations[neighbour].name
-                 << ", "
-                 << fixed
-                 << setprecision(1)
-                 << distance
-                 << " km)";
+            cout << "    -> " << neighbour
+                 << " (" << locations[neighbour].name
+                 << ", " << fixed << setprecision(1)
+                 << distance << " km)";
         }
 
         cout << "\n";
@@ -193,8 +169,6 @@ void displayAdjacencyList()
 }
 
 // 10. MENU
-
-
 void showMenu()
 {
     cout << "\n";
@@ -210,36 +184,41 @@ void showMenu()
 }
 
 // 11. MAIN
-
 int main()
 {
-    // Build the graph
     createGraph();
+
     int choice;
+
     do
     {
         showMenu();
         cout << "\nEnter your choice: ";
         cin >> choice;
+
         switch (choice)
         {
             case 1:
                 displayLocations();
                 break;
+
             case 2:
                 displayRoadNetwork();
                 break;
+
             case 3:
                 displayAdjacencyList();
                 break;
+
             case 4:
                 cout << "\nExiting Road Network Module.\n";
                 break;
+
             default:
                 cout << "\nInvalid choice. Please try again.\n";
         }
 
-    }
-    while (choice != 4);
+    } while (choice != 4);
+
     return 0;
 }
