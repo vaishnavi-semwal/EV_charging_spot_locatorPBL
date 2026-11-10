@@ -315,9 +315,9 @@ int main() {
     cout << "\nCharging Power: "
          << bestCharger.chargingPower << " kW";
 
-    // ---------------------------------------------
+    // ---------------------------
     // Reason for recommendation
-    // ---------------------------------------------
+    // ---------------------------
 
     cout << "\n\nReason for Recommendation:\n";
 
