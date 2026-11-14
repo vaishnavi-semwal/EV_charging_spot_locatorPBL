@@ -636,6 +636,67 @@ void processIncomingCars(vector<Charger> &chargers)
     ofstream clearFile("cars.txt");
     clearFile.close();
 }
+// Create charger details automatically
+
+void createChargerFile()
+{
+    ifstream checkFile("chargers.txt");
+
+    // Do not overwrite existing charger data
+
+    if (checkFile.good())
+    {
+        checkFile.close();
+        return;
+    }
+
+    checkFile.close();
+
+    ofstream file("chargers.txt");
+
+    if (!file)
+        throw runtime_error("Cannot create charger file.");
+
+    int ids[] = {1, 2, 3, 4, 5, 6, 7};
+
+    string locations[] =
+    {
+        "Pacific Mall",
+        "ISBT",
+        "Rajpur Road",
+        "Sahastradhara Road",
+        "Prem Nagar",
+        "Clement Town",
+        "FRI"
+    };
+
+    int slots;
+    float power;
+
+    for (int i = 0; i < 7; i++)
+    {
+        cout << "\nEnter total slots for "
+             << locations[i] << ": ";
+        cin >> slots;
+
+        cout << "Enter charging power (kW): ";
+        cin >> power;
+
+        if (slots <= 0 || slots > 20 || power <= 0)
+            throw invalid_argument("Invalid charger details.");
+
+        file << ids[i] << " "
+             << quoted(locations[i]) << " "
+             << slots << " "
+             << power << " "
+             << 0 << " "
+             << 0 << endl;
+    }
+
+    file.close();
+
+    cout << "\nCharger details saved successfully.\n";
+}
 
 
 // Main function
