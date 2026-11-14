@@ -2,12 +2,7 @@
 #include <string>
 #include <stdexcept>
 #include <iomanip>
-
 using namespace std;
-
-// ==========================================
-// MEMBER 1: EV AND BATTERY MANAGEMENT
-// ==========================================
 
 class Car
 {
@@ -143,10 +138,6 @@ public:
         cout << "===============================\n";
     }
 };
-
-// ==========================================
-// MAIN FUNCTION
-// ==========================================
 
 int main()
 {
