@@ -1,0 +1,212 @@
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <iomanip>
+
+using namespace std;
+
+// ==========================================
+// MEMBER 1: EV AND BATTERY MANAGEMENT
+// ==========================================
+
+class Car
+{
+private:
+
+    // Car information
+    string carId;
+    double batteryCapacity;
+    double currentBatteryPercentage;
+    double energyConsumptionRate;
+    string currentLocation;
+
+public:
+
+    // Parameterized Constructor
+    Car(string id, double capacity, double percentage,
+        double consumption, string location)
+    {
+        if (id.empty())
+            throw invalid_argument("Car ID cannot be empty.");
+
+        if (capacity <= 0)
+            throw invalid_argument("Battery capacity must be positive.");
+
+        if (percentage < 0 || percentage > 100)
+            throw invalid_argument("Battery percentage must be between 0 and 100.");
+
+        if (consumption <= 0)
+            throw invalid_argument("Energy consumption must be positive.");
+
+        if (location.empty())
+            throw invalid_argument("Location cannot be empty.");
+
+        carId = id;
+        batteryCapacity = capacity;
+        currentBatteryPercentage = percentage;
+        energyConsumptionRate = consumption;
+        currentLocation = location;
+    }
+
+    // Validate and update battery percentage
+    void setBatteryPercentage(double percentage)
+    {
+        if (percentage < 0 || percentage > 100)
+        {
+            throw invalid_argument(
+                "Invalid battery percentage! Enter between 0 and 100."
+            );
+        }
+
+        currentBatteryPercentage = percentage;
+    }
+
+    // Get Car ID
+    string getCarId() const
+    {
+        return carId;
+    }
+
+    // Get Battery Capacity
+    double getBatteryCapacity() const
+    {
+        return batteryCapacity;
+    }
+
+    // Get Current Battery Percentage
+    double getBatteryPercentage() const
+    {
+        return currentBatteryPercentage;
+    }
+
+    // Get Energy Consumption Rate
+    double getEnergyConsumptionRate() const
+    {
+        return energyConsumptionRate;
+    }
+
+    // Get Current Location
+    string getCurrentLocation() const
+    {
+        return currentLocation;
+    }
+
+    // Calculate Remaining Battery Energy
+    double calculateRemainingEnergy() const
+    {
+        return (batteryCapacity * currentBatteryPercentage) / 100.0;
+    }
+
+    // Calculate Remaining Driving Range
+    double calculateRemainingRange() const
+    {
+        return calculateRemainingEnergy() / energyConsumptionRate;
+    }
+
+    // Check whether car can reach a particular charger
+    bool canReachCharger(double distance) const
+    {
+        if (distance < 0)
+            throw invalid_argument("Distance cannot be negative.");
+
+        return distance <= calculateRemainingRange();
+    }
+
+    // Display Car Information
+    void displayCarStatus() const
+    {
+        cout << "\n========== EV STATUS ==========\n";
+
+        cout << "Car ID: "
+             << carId << endl;
+
+        cout << "Current Location: "
+             << currentLocation << endl;
+
+        cout << "Battery Capacity: "
+             << batteryCapacity << " kWh" << endl;
+
+        cout << "Battery Remaining: "
+             << currentBatteryPercentage << "%" << endl;
+
+        cout << "Energy Consumption: "
+             << energyConsumptionRate << " kWh/km" << endl;
+
+        cout << fixed << setprecision(2);
+
+        cout << "Remaining Energy: "
+             << calculateRemainingEnergy() << " kWh" << endl;
+
+        cout << "Estimated Driving Range: "
+             << calculateRemainingRange() << " km" << endl;
+
+        cout << "===============================\n";
+    }
+};
+
+// ==========================================
+// MAIN FUNCTION
+// ==========================================
+
+int main()
+{
+    try
+    {
+        // Create Car Object
+        Car myCar(
+            "EV-001",
+            60,
+            35,
+            0.15,
+            "Graphic Era Hill University"
+        );
+
+        // Display EV Information
+        myCar.displayCarStatus();
+
+        // Check Charger Reachability
+        double chargerDistance;
+
+        cout << "\nEnter charging station distance (km): ";
+        cin >> chargerDistance;
+
+        if (!cin)
+        {
+            cout << "Invalid distance input.\n";
+            return 1;
+        }
+
+        if (myCar.canReachCharger(chargerDistance))
+        {
+            cout << "\nCharging station is reachable!\n";
+        }
+        else
+        {
+            cout << "\nCharging station is NOT reachable!\n";
+        }
+
+        // Update Battery Percentage
+        double newPercentage;
+
+        cout << "\nEnter updated battery percentage: ";
+        cin >> newPercentage;
+
+        if (!cin)
+        {
+            cout << "Invalid battery input.\n";
+            return 1;
+        }
+
+        myCar.setBatteryPercentage(newPercentage);
+
+        cout << "\nUpdated EV Information:\n";
+
+        myCar.displayCarStatus();
+    }
+    catch (const exception& e)
+    {
+        cout << "\nError: " << e.what() << endl;
+    }
+
+    return 0;
+}
