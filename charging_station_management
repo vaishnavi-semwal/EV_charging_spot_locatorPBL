@@ -643,7 +643,8 @@ void processIncomingCars(vector<Charger> &chargers)
 int main()
 {
     try
-    {
+    {   
+        createChargerFile();
         vector<Charger> chargers = Charger::loadFromFile();
 
         if (chargers.empty())
