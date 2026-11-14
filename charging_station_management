@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 // Linked List Queue
 
 class LinkedQueue
@@ -186,7 +187,7 @@ public:
         availableSlots = totalSlots;
     }
 
-    // Getters
+    // Getters for Member 4
 
     int getChargerID()
     {
@@ -221,6 +222,22 @@ public:
     int getWaitingCount()
     {
         return waitingCars.size();
+    }
+
+    // Provide waiting car IDs to Member 4
+
+    vector<int> getWaitingCars()
+    {
+        vector<int> cars;
+
+        LinkedQueue temp = waitingCars;
+
+        while (!temp.empty())
+        {
+            cars.push_back(temp.pop());
+        }
+
+        return cars;
     }
 
     // Check whether car already exists
@@ -273,6 +290,10 @@ public:
 
             availableSlots =
                 totalSlots - carsCurrentlyCharging;
+
+            cout << "Car " << carID
+                 << " started charging at Charger "
+                 << chargerID << endl;
         }
     }
 
@@ -287,6 +308,10 @@ public:
             throw runtime_error("Car already exists.");
 
         waitingCars.push(carID);
+
+        cout << "\nCar " << carID
+             << " added to waiting queue of Charger "
+             << chargerID << endl;
 
         assignNextCar();
     }
@@ -315,7 +340,13 @@ public:
         waitingCars = temp;
 
         if (!found)
-            throw runtime_error("Car not found.");
+            throw runtime_error("Car not found in waiting queue.");
+
+        cout << "\nCar " << carID
+             << " removed from waiting queue of Charger "
+             << chargerID << endl;
+
+        assignNextCar();
     }
 
     // Finish charging
@@ -336,6 +367,10 @@ public:
 
         if (!found)
             throw runtime_error("Car is not charging.");
+
+        cout << "\nCar " << carID
+             << " completed charging at Charger "
+             << chargerID << endl;
 
         carsCurrentlyCharging = chargingCars.size();
 
@@ -464,6 +499,9 @@ public:
                 if (!(file >> carID) || carID <= 0)
                     throw runtime_error("Invalid car data.");
 
+                if (c.containsCar(carID))
+                    throw runtime_error("Duplicate car ID.");
+
                 c.chargingCars.push_back(carID);
             }
 
@@ -477,13 +515,39 @@ public:
                 if (!(file >> carID) || carID <= 0)
                     throw runtime_error("Invalid car data.");
 
+                if (c.containsCar(carID))
+                    throw runtime_error("Duplicate car ID.");
+
                 c.waitingCars.push(carID);
+            }
+
+            // Check duplicate cars at other chargers
+
+            for (int i = 0; i < chargers.size(); i++)
+            {
+                for (int j = 0; j < c.chargingCars.size(); j++)
+                {
+                    if (chargers[i].containsCar(c.chargingCars[j]))
+                        throw runtime_error("Duplicate car ID in file.");
+                }
+
+                vector<int> waiting = c.getWaitingCars();
+
+                for (int j = 0; j < waiting.size(); j++)
+                {
+                    if (chargers[i].containsCar(waiting[j]))
+                        throw runtime_error("Duplicate car ID in file.");
+                }
             }
 
             c.carsCurrentlyCharging = c.chargingCars.size();
 
             c.availableSlots =
                 c.totalSlots - c.carsCurrentlyCharging;
+
+            // Fill any available slots from waiting queue
+
+            c.assignNextCar();
 
             chargers.push_back(c);
         }
@@ -513,44 +577,17 @@ void saveAll(vector<Charger> &chargers)
 }
 
 
-// Find best charger
+// Find charger using charger ID
 
-int findBestCharger(vector<Charger> &chargers)
+int findChargerIndex(vector<Charger> &chargers, int chargerID)
 {
-    int best = -1;
-    int minimumLoad = 999999;
-
     for (int i = 0; i < chargers.size(); i++)
     {
-        int load = chargers[i].getCarsCurrentlyCharging()
-                 + chargers[i].getWaitingCount();
-
-        if (chargers[i].getAvailableSlots() > 0 &&
-            load < minimumLoad)
-        {
-            minimumLoad = load;
-            best = i;
-        }
+        if (chargers[i].getChargerID() == chargerID)
+            return i;
     }
 
-    // If all chargers are full, select shortest queue
-
-    if (best == -1)
-    {
-        for (int i = 0; i < chargers.size(); i++)
-        {
-            int load = chargers[i].getCarsCurrentlyCharging()
-                     + chargers[i].getWaitingCount();
-
-            if (load < minimumLoad)
-            {
-                minimumLoad = load;
-                best = i;
-            }
-        }
-    }
-
-    return best;
+    return -1;
 }
 
 
@@ -565,6 +602,38 @@ bool carAlreadyExists(vector<Charger> &chargers, int carID)
     }
 
     return false;
+}
+
+
+// Function used by Member 4
+// Member 4 passes the selected charger ID and car ID
+
+void addCarToSelectedCharger(vector<Charger> &chargers,
+                             int chargerID, int carID)
+{
+    if (carAlreadyExists(chargers, carID))
+        throw runtime_error("Car already exists.");
+
+    int index = findChargerIndex(chargers, chargerID);
+
+    if (index == -1)
+        throw runtime_error("Selected charger not found.");
+
+    chargers[index].addCarToQueue(carID);
+}
+
+
+// Remove a waiting car using charger ID
+
+void removeWaitingCar(vector<Charger> &chargers,
+                      int chargerID, int carID)
+{
+    int index = findChargerIndex(chargers, chargerID);
+
+    if (index == -1)
+        throw runtime_error("Charger ID not found.");
+
+    chargers[index].removeCarFromQueue(carID);
 }
 
 
@@ -607,7 +676,10 @@ void processCompletedCars(vector<Charger> &chargers)
 }
 
 
-// Process incoming cars
+// Process incoming cars selected by Member 4
+
+// cars.txt format:
+// carID chargerID
 
 void processIncomingCars(vector<Charger> &chargers)
 {
@@ -616,19 +688,11 @@ void processIncomingCars(vector<Charger> &chargers)
     if (!file)
         return;
 
-    int carID;
+    int carID, chargerID;
 
-    while (file >> carID)
+    while (file >> carID >> chargerID)
     {
-        if (carAlreadyExists(chargers, carID))
-            continue;
-
-        int index = findBestCharger(chargers);
-
-        if (index == -1)
-            throw runtime_error("No charger available.");
-
-        chargers[index].addCarToQueue(carID);
+        addCarToSelectedCharger(chargers, chargerID, carID);
     }
 
     file.close();
@@ -636,6 +700,8 @@ void processIncomingCars(vector<Charger> &chargers)
     ofstream clearFile("cars.txt");
     clearFile.close();
 }
+
+
 // Create charger details automatically
 
 void createChargerFile()
@@ -704,8 +770,9 @@ void createChargerFile()
 int main()
 {
     try
-    {   
+    {
         createChargerFile();
+
         vector<Charger> chargers = Charger::loadFromFile();
 
         if (chargers.empty())
@@ -715,13 +782,19 @@ int main()
 
         cout << "\nCharger details loaded successfully.\n";
 
+        // Process completed cars first
+
         processCompletedCars(chargers);
+
+        // Receive selected charger IDs from Member 4
 
         processIncomingCars(chargers);
 
+        // Save updated information
+
         saveAll(chargers);
 
-        // Display each station separately
+        // Display each charger separately
 
         for (int i = 0; i < chargers.size(); i++)
         {
