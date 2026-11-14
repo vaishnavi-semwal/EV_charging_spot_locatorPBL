@@ -703,7 +703,6 @@ void processIncomingCars(vector<Charger> &chargers)
 
 
 // Create charger details automatically
-
 void createChargerFile()
 {
     ifstream checkFile("chargers.txt");
@@ -723,6 +722,10 @@ void createChargerFile()
     if (!file)
         throw runtime_error("Cannot create charger file.");
 
+    // Predefined charger details
+
+    int numberOfChargers = 7;
+
     int ids[] = {1, 2, 3, 4, 5, 6, 7};
 
     string locations[] =
@@ -736,25 +739,16 @@ void createChargerFile()
         "FRI"
     };
 
-    int slots;
-    float power;
+    int slots[] = {4, 3, 5, 4, 3, 2, 5};
 
-    for (int i = 0; i < 7; i++)
+    float power[] = {60, 40, 50, 60, 30, 40, 50};
+
+    for (int i = 0; i < numberOfChargers; i++)
     {
-        cout << "\nEnter total slots for "
-             << locations[i] << ": ";
-        cin >> slots;
-
-        cout << "Enter charging power (kW): ";
-        cin >> power;
-
-        if (slots <= 0 || slots > 20 || power <= 0)
-            throw invalid_argument("Invalid charger details.");
-
         file << ids[i] << " "
              << quoted(locations[i]) << " "
-             << slots << " "
-             << power << " "
+             << slots[i] << " "
+             << power[i] << " "
              << 0 << " "
              << 0 << endl;
     }
@@ -763,8 +757,6 @@ void createChargerFile()
 
     cout << "\nCharger details saved successfully.\n";
 }
-
-
 // Main function
 
 int main()
